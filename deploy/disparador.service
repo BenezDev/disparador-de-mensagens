@@ -1,0 +1,27 @@
+[Unit]
+Description=Disparador de mensagens (painel + motor)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=b514526
+UMask=0077
+WorkingDirectory=/home/b514526/Área de trabalho/Hery/Disparador de mensagens1
+ExecStart=/usr/bin/python3 disparar.py painel 8777
+Restart=always
+RestartSec=5
+# stdout sem buffer: o journal mostra o que acontece na hora
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/home/b514526/Área de trabalho/Hery/Disparador de mensagens1
+# credenciais podem vir daqui em vez do config.json (tem prioridade).
+# Para usar: descomente e preencha, depois chmod 600 neste arquivo.
+#Environment=EVOLUTION_APIKEY=
+#Environment=WHATSAPP_TOKEN=
+
+[Install]
+WantedBy=multi-user.target

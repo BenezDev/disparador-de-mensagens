@@ -1,0 +1,74 @@
+{
+  "_leia": [
+    "Copie para config.json e edite. NAO coloque credencial neste arquivo de",
+    "exemplo -- ele fica no repositorio. O config.json e gravado com chmod 600",
+    "e esta no .gitignore.",
+    "",
+    "Melhor ainda: deixe o segredo fora do disco, em variavel de ambiente. O",
+    "que estiver no ambiente TEM PRIORIDADE sobre o config.json e o painel",
+    "mostra o campo travado, com a marca 'vem do ambiente':",
+    "  WHATSAPP_TOKEN, WHATSAPP_PHONE_ID, WHATSAPP_APP_SECRET,",
+    "  WHATSAPP_VERIFY_TOKEN, EVOLUTION_APIKEY, EVOLUTION_WEBHOOK_SECRET,",
+    "  TWILIO_SID, TWILIO_TOKEN, SMS_URL"
+  ],
+
+  "janela": {
+    "inicio": "09:00",
+    "fim": "19:00",
+    "sabado_inicio": "09:00",
+    "sabado_fim": "13:00",
+    "domingo": false
+  },
+  "cooldown_dias": 45,
+  "importacao": {
+    "diretorios": ["importacoes"],
+    "max_bytes": 536870912
+  },
+  "teste": { "limite_dia": 5 },
+
+  "optout": {
+    "rodape_sms": "Responda SAIR p/ nao receber.",
+    "rodape_whatsapp": "Se nao quiser mais receber, responda SAIR."
+  },
+
+  "provedores": {
+    "simulado": { "falha_pct": 3 },
+
+    "whatsapp_cloud": {
+      "_como": "Meta Business > WhatsApp > Configuracao da API. Contato frio EXIGE template de marketing aprovado.",
+      "phone_id": "",
+      "token": "",
+      "app_secret": "",
+      "verify_token": "",
+      "versao": "v21.0"
+    },
+
+    "evolution": {
+      "_como": "Suba com deploy/subir.sh; ele grava a apikey em deploy/.chave e cria a instancia.",
+      "url": "http://127.0.0.1:8080",
+      "instancia": "principal",
+      "apikey": "",
+      "webhook_secret": "",
+      "versao": "2"
+    },
+
+    "sms_http": {
+      "_como": "Qualquer gateway HTTP. O corpo precisa conter {destino} e {texto}. Exemplo abaixo: SMSDev.",
+      "url": "https://api.smsdev.com.br/v1/send",
+      "metodo": "POST",
+      "tipo": "json",
+      "cabecalhos": {},
+      "corpo": { "key": "", "type": "9", "number": "{destino}", "msg": "{texto}" },
+      "campo_id": "id",
+      "optout_externo": false
+    },
+
+    "twilio": {
+      "_como": "Painel da Twilio. Conta de teste so envia para numeros verificados.",
+      "sid": "",
+      "token": "",
+      "de": "+5511999999999",
+      "webhook": ""
+    }
+  }
+}

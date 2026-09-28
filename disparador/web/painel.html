@@ -1,0 +1,1350 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+<title>DR.Hery — Disparador</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#040705;--bg2:#070d09;--pan:#0a1210;--pan2:#0e1a14;
+  --line:#16301f;--line2:#1f4a2d;
+  --vd:#00ff6a;--vd2:#00c853;--vdim:#0a3a1e;
+  --am:#f2ff00;--am2:#ffd000;
+  --tx:#c8ffdd;--tx2:#6f9f82;--tx3:#5f9a73;
+  --bad:#ff2d55;
+  --mono:'JetBrains Mono','Fira Code','Ubuntu Mono','DejaVu Sans Mono',Consolas,monospace;
+}
+html[data-t="light"]{
+  --bg:#eef5ef;--bg2:#e4eee6;--pan:#fff;--pan2:#f2f8f3;
+  --line:#c9ddcf;--line2:#9ec9ac;--vdim:#dff2e6;
+  --vd:#00752f;--vd2:#006328;--am:#755f00;--am2:#63510a;
+  --tx:#0d2417;--tx2:#3c6349;--tx3:#496a55;--bad:#b3001b;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--tx);font:12.5px/1.5 var(--mono);
+  display:flex;flex-direction:column;overflow:hidden}
+header{background:linear-gradient(180deg,var(--pan),var(--bg2));
+  border-bottom:1px solid var(--line2);padding:9px 14px;display:flex;
+  align-items:center;gap:14px;flex-wrap:wrap;flex:none}
+h1{font-size:17px;letter-spacing:-.3px}
+h1 .dr{color:var(--am)}h1 .hy{color:var(--vd)}
+.pill{border:1px solid var(--line2);background:var(--pan2);padding:3px 9px;
+  border-radius:2px;color:var(--tx2);white-space:nowrap}
+.pill b{color:var(--vd)}
+.pill.on{border-color:var(--vd);color:var(--vd)}
+.pill.off{border-color:var(--bad);color:var(--bad)}
+.pill.warn{border-color:var(--am);color:var(--am)}
+.sp{flex:1}
+nav{display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid var(--line);background:var(--bg2);flex:none}
+nav button{background:none;border:none;border-bottom:2px solid transparent;
+  color:var(--tx3);font:inherit;padding:8px 16px;cursor:pointer}
+nav button.on{color:var(--vd);border-bottom-color:var(--vd);background:var(--pan)}
+nav button:hover{color:var(--tx)}
+main{flex:1;overflow:auto;padding:14px;display:grid;gap:14px;align-content:start}
+.aba{display:none;gap:14px}
+.aba.on{display:grid}
+.card{background:var(--pan);border:1px solid var(--line);padding:12px}
+.card>h2{font-size:12px;color:var(--am);letter-spacing:.5px;margin-bottom:9px;
+  text-transform:uppercase;font-weight:700}
+.grid{display:grid;gap:10px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+label{display:block;color:var(--tx3);font-size:11px;margin-bottom:3px}
+input,select,textarea{width:100%;background:var(--bg2);border:1px solid var(--line2);
+  color:var(--tx);font:inherit;padding:6px 8px;border-radius:2px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--vd)}
+textarea{resize:vertical;min-height:82px;line-height:1.55}
+.btn{background:var(--vdim);border:1px solid var(--vd2);color:var(--vd);
+  font:inherit;padding:6px 13px;cursor:pointer;border-radius:2px;white-space:nowrap}
+.btn:hover{background:var(--vd2);color:#000}
+.btn.g{background:transparent;border-color:var(--line2);color:var(--tx2)}
+.btn.g:hover{border-color:var(--tx2);color:var(--tx);background:var(--pan2)}
+.btn.r{background:transparent;border-color:var(--bad);color:var(--bad)}
+.btn.r:hover{background:var(--bad);color:#fff}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.linha{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+th{text-align:left;color:var(--tx3);font-weight:400;padding:5px 7px;
+  border-bottom:1px solid var(--line2);position:sticky;top:0;background:var(--pan)}
+td{padding:4px 7px;border-bottom:1px solid var(--line)}
+tbody tr:hover{background:var(--pan2)}
+.tel{color:var(--am)}
+.rolar{max-height:320px;overflow:auto}
+.e{padding:1px 6px;border:1px solid;border-radius:2px;font-size:10.5px;white-space:nowrap}
+.e-fila{color:var(--tx3)}.e-enviando{color:var(--am)}
+.e-enviado,.e-entregue,.e-lido{color:var(--vd);border-color:var(--vd2)}
+.e-respondido{color:var(--am);border-color:var(--am2)}
+.e-falha,.e-bloqueado,.e-cancelado{color:var(--bad);border-color:var(--bad)}
+.previa{background:var(--bg2);border-left:2px solid var(--vd2);padding:8px 10px;
+  margin-bottom:7px;white-space:pre-wrap;word-break:break-word}
+.previa .cab{color:var(--tx3);font-size:10.5px;margin-bottom:4px}
+.aviso{border-left:2px solid var(--am);background:var(--pan2);padding:8px 11px;color:var(--tx2)}
+.aviso b{color:var(--am)}
+.num{font-size:20px;color:var(--vd);font-weight:700}
+.est{background:var(--pan2);border:1px solid var(--line);padding:9px 11px}
+.est span{display:block;color:var(--tx3);font-size:10.5px;text-transform:uppercase}
+.vars{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.vars code{background:var(--bg2);border:1px solid var(--line2);padding:2px 6px;
+  cursor:pointer;color:var(--tx2);font-size:10.5px}
+.vars code:hover{border-color:var(--vd);color:var(--vd)}
+.msg{padding:7px 10px;border-left:2px solid var(--vd);background:var(--pan2);display:none}
+.msg.on{display:block}
+.msg.err{border-color:var(--bad);color:var(--bad)}
+/* ---- cartões de configuração de provedor ---- */
+.prov{background:var(--pan2);border:1px solid var(--line);border-left-width:3px;padding:11px 13px}
+.prov.ok{border-left-color:var(--vd)}
+.prov.falta{border-left-color:var(--am)}
+.prov.ensaio{border-left-color:var(--tx3)}
+.prov .top{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:3px}
+.prov .nome{font-weight:700;color:var(--tx)}
+.prov .diag{color:var(--tx2);margin:5px 0 2px}
+.prov .acao{color:var(--tx3);font-size:11.5px;margin-bottom:8px}
+.prov .acao code{background:var(--bg2);border:1px solid var(--line2);padding:1px 5px;color:var(--am)}
+.prov .campos{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.prov label .req{color:var(--bad)}
+.prov label .env{color:var(--vd2)}
+.prov input.vazio{border-color:var(--am)}
+.tag{font-size:10px;padding:1px 6px;border:1px solid;border-radius:2px;text-transform:uppercase;letter-spacing:.4px}
+.tag.ok{color:var(--vd);border-color:var(--vd2)}
+.tag.falta{color:var(--am);border-color:var(--am2)}
+.tag.ensaio{color:var(--tx3);border-color:var(--line2)}
+.tag.det{color:var(--tx3);border-color:var(--line);text-transform:none;letter-spacing:0}
+.faixa{background:var(--pan2);border-left:3px solid var(--tx3);padding:9px 12px;color:var(--tx2)}
+.chip{background:var(--pan2);border:1px solid var(--line);border-left-width:3px;padding:10px 12px}
+.chip.on{border-left-color:var(--vd)}
+.chip.off{border-left-color:var(--am)}
+.chip.desl{border-left-color:var(--line2);opacity:.6}
+.chip .cab{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.chip .cab b{color:var(--tx)}
+.chip .num{color:var(--am);font-size:11px}
+.chip .barra{height:4px;background:var(--bg2);border:1px solid var(--line);margin:7px 0 5px}
+.chip .barra i{display:block;height:100%;background:var(--vd2)}
+.chip .med{display:flex;gap:13px;flex-wrap:wrap;color:var(--tx3);font-size:11px}
+.chip .med b{color:var(--tx2)}
+.chip .acoes{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center}
+.chip .acoes label{display:inline-flex;align-items:center;gap:4px;margin:0;font-size:11px}
+.chip .acoes input[type=checkbox]{width:auto}
+.chip .acoes input[type=number]{width:66px;padding:3px 5px}
+#qrCaixa{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;
+  align-items:center;justify-content:center;z-index:100}
+#qrCaixa.on{display:flex}
+#qrCaixa .m{background:var(--pan);border:1px solid var(--line2);padding:18px;text-align:center;max-width:92vw}
+#qrCaixa img{width:290px;height:290px;image-rendering:pixelated;background:#fff;padding:8px}
+.faixa b{color:var(--am)}
+.tut-fundo{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;
+  display:flex;align-items:center;justify-content:center;padding:18px}
+.tut-caixa{background:var(--pan);border:1px solid var(--linha2,#2a2a2a);
+  border-radius:10px;max-width:560px;width:100%;padding:20px 22px;
+  box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.tut-cabeca{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+#tutPasso{color:var(--tx3);font-size:12px}
+.tut-corpo h3{margin:0 0 8px;color:var(--vd);font-size:17px}
+.tut-corpo p{margin:0 0 10px;line-height:1.55;color:var(--tx2)}
+.tut-corpo .destaque{background:var(--pan2);border-left:3px solid var(--vd);
+  padding:9px 12px;border-radius:5px;margin:10px 0;color:var(--tx)}
+.tut-corpo .aviso{background:var(--pan2);border-left:3px solid #d99;
+  padding:9px 12px;border-radius:5px;margin:10px 0;color:var(--tx2)}
+.tut-corpo b{color:var(--tx)}
+.tut-corpo kbd{background:var(--pan2);border:1px solid var(--linha2,#333);
+  border-radius:4px;padding:1px 7px;font-size:12px;color:var(--vd)}
+.tut-pe{display:flex;justify-content:space-between;margin-top:18px}
+.tut-emoji{font-size:30px;display:block;margin-bottom:6px}
+.solta{border:2px dashed var(--linha2,#3a3a3a);border-radius:10px;padding:26px 18px;
+  text-align:center;cursor:pointer;color:var(--tx2);background:var(--pan2);transition:.15s}
+.solta:hover{border-color:var(--vd);color:var(--tx)}
+.solta.sobre{border-color:var(--vd);background:var(--pan);color:var(--tx)}
+.solta.cheia{border-style:solid;border-color:var(--vd)}
+.solta-emoji{font-size:34px;margin-bottom:8px}
+
+/* conversas: 3 colunas estilo WhatsApp -- chips | clientes | conversa */
+.zap{display:grid;grid-template-columns:210px 300px 1fr;height:calc(100vh - 150px);
+  min-height:420px;border:1px solid var(--line);background:var(--pan)}
+.zap>div{min-height:0;display:flex;flex-direction:column;border-right:1px solid var(--line)}
+.zap>div:last-child{border-right:none}
+.zap .tit{padding:8px 10px;border-bottom:1px solid var(--line);color:var(--am);font-size:11px;
+  text-transform:uppercase;letter-spacing:.5px;font-weight:700;flex:none}
+.zap .lista{overflow:auto;flex:1}
+.zap .item{padding:8px 10px;border-bottom:1px solid var(--line);cursor:pointer;display:grid;
+  grid-template-columns:1fr auto;gap:2px 8px;align-items:center}
+.zap .item:hover{background:var(--pan2)}
+.zap .item.on{background:var(--vdim);border-left:3px solid var(--vd)}
+.zap .item b{color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zap .item small{color:var(--tx3);font-size:10.5px;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+.zap .ponto{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;
+  background:var(--line2)}
+.zap .ponto.on{background:var(--vd)}
+.zap .nl{background:var(--vd);color:#000;border-radius:9px;padding:0 6px;font-size:10px;
+  font-weight:700;min-width:18px;text-align:center}
+.zap .busca{padding:6px;border-bottom:1px solid var(--line);flex:none}
+.zap .msgs{overflow:auto;flex:1;padding:12px;display:flex;flex-direction:column;gap:6px;
+  background:var(--bg2)}
+.zap .bolha{max-width:72%;padding:6px 9px;border:1px solid var(--line);border-radius:6px;
+  white-space:pre-wrap;word-break:break-word;background:var(--pan)}
+.zap .bolha.saida{align-self:flex-end;background:var(--vdim);border-color:var(--vd2)}
+.zap .bolha .hora{display:block;text-align:right;color:var(--tx3);font-size:10px;margin-top:3px}
+.zap .bolha .midia{color:var(--am);font-size:11px}
+.zap .dia{align-self:center;color:var(--tx3);font-size:10.5px;padding:2px 8px;
+  border:1px solid var(--line);border-radius:9px;background:var(--pan)}
+.zap .escrever{flex:none;border-top:1px solid var(--line);padding:8px;display:flex;gap:8px;
+  align-items:flex-end}
+.zap .escrever textarea{min-height:38px;max-height:140px;resize:none}
+.zap .vazio{color:var(--tx3);padding:18px;text-align:center}
+@media (max-width:900px){
+  .zap{grid-template-columns:1fr;height:auto}
+  .zap>div{border-right:none;border-bottom:1px solid var(--line);max-height:320px}
+  .zap>div:last-child{max-height:none;min-height:420px}
+}
+</style></head><body>
+
+<header>
+  <h1><span class="dr">DR.</span><span class="hy">Hery</span> · disparador</h1>
+  <div class="pill" id="pMotor">motor: —</div>
+  <div class="pill" id="pJanela">janela: —</div>
+  <div class="pill">contatos <b id="pContatos">0</b></div>
+  <div class="pill">disparadas <b id="pDisp">0</b></div>
+  <div class="pill">hoje <b id="pHoje">0</b></div>
+  <div class="pill">bloqueios <b id="pBloq">0</b></div>
+  <div class="pill" id="pChips">chips —</div>
+  <div class="pill warn" id="pAtualizar" style="display:none;cursor:pointer"
+    title="recarrega a página com a versão nova">painel atualizado — clique para carregar</div>
+  <div class="pill" id="pAlerta" style="display:none"></div>
+  <div class="sp"></div>
+  <button class="btn g" id="bTutorial">? tutorial</button>
+  <button class="btn g" id="tema">tema</button>
+  <button class="btn" id="bMotor">ligar motor</button>
+</header>
+
+<nav>
+  <button class="on" data-aba="campanhas">campanhas</button>
+  <button data-aba="nova">nova campanha</button>
+  <button data-aba="chips">chips</button>
+  <button data-aba="conversas">conversas <b id="navConversas" style="color:var(--vd)"></b></button>
+  <button data-aba="fila">fila</button>
+  <button data-aba="bloqueios">bloqueios</button>
+  <button data-aba="avisos">avisos <b id="navAvisos" style="color:var(--am)"></b></button>
+  <button data-aba="base">base</button>
+  <button data-aba="config">config</button>
+</nav>
+
+<div id="tut" class="tut-fundo" style="display:none">
+  <div class="tut-caixa">
+    <div class="tut-cabeca">
+      <span id="tutPasso">1 / 8</span>
+      <button class="btn g" id="tutPular">pular tutorial</button>
+    </div>
+    <div id="tutCorpo"></div>
+    <div class="tut-pe">
+      <button class="btn g" id="tutAnt">← anterior</button>
+      <button class="btn" id="tutProx">próximo →</button>
+    </div>
+  </div>
+</div>
+
+<main>
+<!-- ================= CAMPANHAS ================= -->
+<section class="aba on" id="ab-campanhas">
+  <div class="card"><h2>campanhas</h2>
+    <div class="rolar"><table><thead><tr>
+      <th>#</th><th>nome</th><th>canal</th><th>provedor</th><th>fila</th>
+      <th>enviado</th><th>falha</th><th>cota hoje</th><th>ritmo</th><th>estado</th><th></th>
+    </tr></thead><tbody id="tCamp"></tbody></table></div>
+  </div>
+  <div class="card" id="cDet" style="display:none"><h2>público da campanha <span id="detNome"></span></h2>
+    <div class="grid g3">
+      <div><label>cidade</label><input id="fCidade" list="lCidades" placeholder="todas"></div>
+      <div><label>segmento (cnae)</label><input id="fSeg" placeholder="ex: restaurante"></div>
+      <div><label>busca no nome</label><input id="fBusca" placeholder=""></div>
+      <div><label>limite</label><input id="fLim" type="number" value="500"></div>
+      <div><label>ordem</label><select id="fOrd"><option value="">sequencial</option><option value="1">aleatória</option></select></div>
+      <div><label>&nbsp;</label><label><input type="checkbox" id="fEmail" style="width:auto"> só com e-mail</label></div>
+    </div>
+    <div class="linha" style="margin-top:10px">
+      <label style="margin:0 6px 0 0"><input type="checkbox" id="fFaixas" style="width:auto">
+        dividir em faixas por chip</label>
+      <button class="btn g" id="bContar">contar disponíveis</button>
+      <button class="btn" id="bMontar">montar fila</button>
+      <button class="btn g" id="bPrevia">pré-visualizar</button>
+      <span id="cContagem" style="color:var(--tx2)"></span>
+    </div>
+    <div id="dFaixas" style="margin-top:10px"></div>
+    <div id="dPrevia" style="margin-top:10px"></div>
+    <div class="msg" id="mDet"></div>
+  </div>
+</section>
+
+<!-- ================= NOVA ================= -->
+<section class="aba" id="ab-nova">
+  <div class="card"><h2>nova campanha</h2>
+    <div class="grid g2">
+      <div><label>nome</label><input id="nNome" placeholder="prospecção agosto"></div>
+      <div><label>canal</label><select id="nCanal"><option value="sms">SMS</option><option value="whatsapp">WhatsApp</option></select></div>
+      <div><label>provedor</label><select id="nProv"></select></div>
+      <div style="grid-column:1/-1"><div id="nStatus"></div></div>
+      <div><label>mensagens por minuto</label><input id="nRitmo" type="number" step="0.5" value="6"></div>
+      <div><label>limite por dia</label><input id="nLimite" type="number" value="300"></div>
+      <div><label>&nbsp;</label><label><input type="checkbox" id="nAquec" style="width:auto"> rampa gradual (20→900/dia)</label>
+        <span id="nAquecPor" style="color:var(--tx3);font-size:10.5px"></span></div>
+    </div>
+    <div style="margin-top:10px">
+      <label>modelo da mensagem</label>
+      <textarea id="nModelo">{Olá|Oi|Bom dia}, {nome}! Trabalho com {segmento_curto} aqui em {cidade}. Posso te mandar uma proposta rápida?</textarea>
+      <div class="vars" id="vars"></div>
+    </div>
+    <div id="nImg" style="margin-top:10px">
+      <label>imagem (opcional — só WhatsApp)</label>
+      <div class="linha" style="align-items:center">
+        <input type="file" id="nImgArq" accept="image/jpeg,image/png,image/webp" style="flex:1;min-width:180px">
+        <button class="btn g" id="nImgLimpar" style="display:none">remover imagem</button>
+      </div>
+      <div id="nImgPrev" style="margin-top:8px"></div>
+      <div style="color:var(--tx3);font-size:11.5px;margin-top:4px">
+        A foto vai com a mensagem numa só, e o texto do modelo vira a legenda. JPG, PNG ou WEBP até 5 MB.</div>
+    </div>
+    <div id="nTmpl" style="display:none;margin-top:10px" class="grid g3">
+      <div><label>template aprovado (Meta)</label><input id="nTmplNome" placeholder="ex: apresentacao_v1"></div>
+      <div><label>idioma</label><input id="nTmplIdioma" value="pt_BR"></div>
+      <div><label>parâmetros {{1}},{{2}}…</label><input id="nTmplParams" placeholder="{nome},{cidade}"></div>
+    </div>
+    <div class="linha" style="margin-top:11px">
+      <button class="btn g" id="bPreviaNova">pré-visualizar</button>
+      <button class="btn" id="bCriar">criar campanha</button>
+    </div>
+    <div id="dPreviaNova" style="margin-top:10px"></div>
+    <div class="msg" id="mNova"></div>
+  </div>
+  <div class="card"><h2>envio de teste</h2>
+    <div class="linha">
+      <div style="flex:1;min-width:170px"><label>telefone</label><input id="tFone" placeholder="17 99999-9999"></div>
+      <button class="btn" id="bTeste">enviar 1 mensagem de teste</button>
+    </div>
+    <div class="msg" id="mTeste"></div>
+  </div>
+</section>
+
+<!-- ================= CHIPS ================= -->
+<section class="aba" id="ab-chips">
+  <div class="card"><h2>capacidade dos chips</h2>
+    <div class="grid g3" id="dCap"></div>
+    <div class="faixa" id="dRampaStatus" style="margin-top:11px">Carregando estado da rampa…</div>
+  </div>
+
+  <div class="card"><h2>adicionar chip</h2>
+    <div class="linha">
+      <div style="flex:1;min-width:150px"><label>nome (no gateway)</label>
+        <input id="iNome" placeholder="chip02"></div>
+      <div style="flex:1;min-width:150px"><label>apelido</label>
+        <input id="iRotulo" placeholder="Chip da loja"></div>
+      <button class="btn" id="bAddChip">criar</button>
+      <button class="btn g" id="bSincChip">sincronizar com o gateway</button>
+      <button class="btn" id="bRampa">ativar rampa automática</button>
+    </div>
+    <div class="faixa" id="dVagas" style="margin-top:9px">—</div>
+    <div class="msg" id="mChip"></div>
+  </div>
+
+  <div class="card"><h2>chips</h2><div id="dChips" class="grid"></div></div>
+
+  <div class="card"><h2>regra de operação</h2>
+    <div class="faixa">A rampa avança sozinha por chip: <b>20 → 40 → 80 → 150 →
+      250 → 400 → 600 → 900/dia</b>. Ela começa na primeira conexão, respeita o teto
+      individual e não reinicia ao clicar novamente. Conversas artificiais não são
+      geradas; WhatsApp real exige <b>consentimento_em</b> e <b>consentimento_origem</b>.</div>
+  </div>
+</section>
+
+<!-- ================= FILA ================= -->
+<section class="aba" id="ab-conversas">
+  <div class="zap">
+    <div><div class="tit">chips</div><div class="lista" id="zChips"></div></div>
+    <div><div class="tit" id="zTitConv">conversas</div>
+      <div class="busca"><input id="zBusca" placeholder="buscar nome ou número"></div>
+      <div class="lista" id="zConv"><div class="vazio">escolha um chip</div></div></div>
+    <div>
+      <div class="tit" id="zTitMsg">conversa</div>
+      <div class="msgs" id="zMsgs"><div class="vazio">escolha uma conversa</div></div>
+      <div class="escrever">
+        <textarea id="zTexto" rows="1" placeholder="responder… (Enter envia)" disabled></textarea>
+        <button class="btn" id="zEnviar" disabled>enviar</button>
+      </div>
+      <div class="msg" id="mZap" style="margin:0 8px 8px"></div>
+    </div>
+  </div>
+  <div class="faixa">As conversas são gravadas pelo painel a partir do momento em que chegam
+    (o gateway não guarda histórico). Aparece aqui: o que a campanha mandou, o que o cliente
+    respondeu e o que foi respondido — daqui ou do próprio celular do chip. Responder só é possível
+    em conversa já aberta e nunca para número na blocklist. Nada aqui mexe na conexão dos chips.</div>
+</section>
+
+<section class="aba" id="ab-fila">
+  <div class="card"><h2>últimos envios</h2>
+    <div class="linha" style="margin-bottom:9px">
+      <select id="qEstado" style="width:auto"><option value="">todos os estados</option>
+        <option>fila</option><option>enviado</option><option>entregue</option>
+        <option>lido</option><option>respondido</option><option>falha</option>
+        <option>bloqueado</option><option>cancelado</option><option>indeterminado</option></select>
+      <button class="btn g" id="bAtualizar">atualizar</button>
+      <label style="margin:0"><input type="checkbox" id="qAuto" style="width:auto" checked> auto</label>
+    </div>
+    <div class="rolar"><table><thead><tr>
+      <th>quando</th><th>telefone</th><th>estado</th><th>tent</th><th>mensagem / erro</th>
+    </tr></thead><tbody id="tFila"></tbody></table></div>
+  </div>
+  <div class="card" id="cPresos" style="display:none"><h2>envios em limbo</h2>
+    <div class="faixa" style="margin-bottom:10px">O processo caiu no meio da chamada
+      ao provedor: <b>não dá para saber se a mensagem saiu</b>. Reenviar às cegas
+      duplica; deixar parado perde o lead. Confira o recibo no provedor e decida.
+      Se o webhook de entrega chegar, resolve sozinho.</div>
+    <div class="rolar" style="max-height:230px"><table><thead><tr>
+      <th>#</th><th>telefone</th><th>campanha</th><th>chip</th><th>quando</th>
+    </tr></thead><tbody id="tPresos"></tbody></table></div>
+    <div class="linha" style="margin-top:9px">
+      <button class="btn" data-dec="saiu">confirmei: saiu → marcar enviado</button>
+      <button class="btn g" data-dec="nao_saiu">confirmei: não saiu → voltar pra fila</button>
+      <button class="btn r" data-dec="descartar">descartar</button>
+    </div>
+    <div class="msg" id="mPresos"></div>
+  </div>
+
+  <div class="card"><h2>log</h2>
+    <div class="rolar" style="max-height:220px"><table><tbody id="tLog"></tbody></table></div>
+  </div>
+</section>
+
+<!-- ================= BLOQUEIOS ================= -->
+<section class="aba" id="ab-bloqueios">
+  <div class="card"><h2>bloquear números</h2>
+    <div class="aviso" style="margin-bottom:10px">Quem entra aqui <b>nunca mais</b> recebe mensagem, e
+      tudo que já estava na fila para o número é cancelado na hora. Respostas com
+      SAIR/PARE/NÃO QUERO caem aqui sozinhas, pelo webhook.</div>
+    <label>um número por linha</label>
+    <textarea id="bLista" placeholder="17999998888&#10;(17) 3234-5678"></textarea>
+    <div class="linha" style="margin-top:9px">
+      <button class="btn r" id="bBloquear">bloquear</button>
+      <span style="color:var(--tx3)">total: <b id="bTotal">0</b></span>
+    </div>
+    <div class="msg" id="mBloq"></div>
+  </div>
+  <div class="card"><h2>lista</h2>
+    <div class="rolar"><table><thead><tr><th>telefone</th><th>motivo</th><th>origem</th><th>quando</th></tr></thead>
+      <tbody id="tBloq"></tbody></table></div>
+  </div>
+</section>
+
+<!-- ================= AVISOS ================= -->
+<section class="aba" id="ab-avisos">
+  <div class="card"><h2>avisos</h2>
+    <div class="aviso" style="margin-bottom:10px">Tudo que precisa de atenção num lugar só:
+      chip que <b>caiu ou desconectou</b>, número <b>bloqueado</b>, <b>banimento</b>,
+      fila <b>redistribuída</b> e <b>erros</b>. Mais recente no topo.</div>
+    <div class="linha" style="margin-bottom:8px">
+      <button class="btn" id="avAtualizar">atualizar</button>
+      <span style="color:var(--tx3)">mostrando <b id="avTotal">0</b> avisos</span>
+    </div>
+    <div class="rolar"><table><thead><tr>
+      <th style="width:120px">quando</th><th style="width:150px">tipo</th>
+      <th>número</th><th>detalhe</th>
+    </tr></thead><tbody id="tAvisos"></tbody></table></div>
+  </div>
+</section>
+
+<!-- ================= BASE ================= -->
+<section class="aba" id="ab-base">
+  <div class="card"><h2>importar contatos</h2>
+    <div id="iSolta" class="solta">
+      <div class="solta-emoji">📄</div>
+      <div id="iSoltaTexto"><b>Arraste aqui</b> o arquivo que você baixou do Dr. Hery,<br>
+        ou <b>clique para procurar</b>.</div>
+      <input type="file" id="iArqUp" accept=".csv,text/csv" hidden>
+    </div>
+    <div class="destaque" style="margin-top:10px">
+      Use o export de <b>LEADS</b> do Dr. Hery (o arquivo <code>drhery_leads_…csv</code>,
+      que tem <b>telefone</b>). O export de e-mails não serve para WhatsApp.
+      Os arquivos que você baixa costumam ficar em <b>Downloads</b> ou na <b>Área
+      de trabalho</b>. Só entram celulares; repetido entra uma vez; DESCARTADO vai
+      para a blocklist.</div>
+    <div class="linha" style="margin-top:10px">
+      <button class="btn" id="bImportar" disabled>importar</button>
+    </div>
+    <label style="display:flex;align-items:center;gap:7px;margin-top:12px">
+      <input type="checkbox" id="iOptin" style="width:auto">
+      <span>estes contatos <b>deram opt-in</b> (autorizaram receber mensagens)</span></label>
+    <div id="iOptinBox" style="display:none;margin-top:8px">
+      <label>de onde veio o consentimento?</label>
+      <input id="iOptinOrigem" placeholder="ex.: formulário do site, cadastro na loja, feira X"
+        style="max-width:420px">
+      <div class="aviso" style="margin-top:8px">Só marque se for verdade. Campanha
+      de WhatsApp só dispara para quem tem opt-in — esta origem fica <b>registrada
+      em cada contato</b> como comprovação. É a sua declaração e a sua
+      responsabilidade legal.</div>
+    </div>
+    <div class="msg" id="mImp"></div>
+  </div>
+  <div class="card"><h2>base</h2>
+    <div class="grid g3" id="dBase"></div>
+    <div id="cOptinBase" style="display:none;margin-top:14px">
+      <div class="aviso"><b>Nenhum contato tem opt-in.</b> Campanha de WhatsApp
+        só monta fila com contatos que autorizaram receber. Você pode declarar
+        aqui o opt-in da base — informando de onde veio essa autorização.</div>
+      <div class="linha" style="margin-top:10px">
+        <div style="flex:1;min-width:240px"><label>origem do consentimento</label>
+          <input id="obOrigem" placeholder="ex.: prospecção B2B — dado público CNPJ / feira / cadastro"></div>
+        <button class="btn" id="obDeclarar">declarar opt-in da base</button>
+      </div>
+      <div class="aviso" style="margin-top:8px">É a <b>sua declaração</b> e a sua
+        responsabilidade legal. A base da Receita é dado público, mas não é uma
+        lista de opt-in de verdade — o risco de denúncia/banimento continua seu.
+        Preenche só quem está sem opt-in; não sobrescreve nada.</div>
+      <div class="msg" id="mOptin"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONFIG ================= -->
+<section class="aba" id="ab-config">
+  <div class="card"><h2>janela de contato</h2>
+    <div class="grid g3">
+      <div><label>início (seg–sex)</label><input id="cIni" type="time"></div>
+      <div><label>fim (seg–sex)</label><input id="cFim" type="time"></div>
+      <div><label>início sábado</label><input id="cSIni" type="time"></div>
+      <div><label>fim sábado</label><input id="cSFim" type="time"></div>
+      <div><label>&nbsp;</label><label><input type="checkbox" id="cDom" style="width:auto"> disparar domingo</label></div>
+      <div><label>cooldown entre campanhas (dias)</label><input id="cCool" type="number"></div>
+    </div>
+    <div class="aviso" style="margin-top:10px">Janela operacional conservadora.
+      O Decreto 11.034/2022 trata de SAC e não é a fonte desta faixa. Ajustar o horário
+      não substitui consentimento, opt-out, cooldown ou regras do provedor.</div>
+  </div>
+  <div class="card"><h2>opt-out</h2>
+    <div class="grid g2">
+      <div><label>rodapé SMS</label><input id="cRodSms"></div>
+      <div><label>rodapé WhatsApp</label><input id="cRodWa"></div>
+    </div>
+  </div>
+  <div class="card"><h2>configurar envio</h2>
+    <div class="faixa" style="margin-bottom:11px">Enquanto o provedor não estiver
+      <b>pronto</b>, o disparo real fica bloqueado — a campanha não começa e nenhum
+      lead é gasto. O <b>Simulado</b> funciona sempre e não envia nada.</div>
+    <div id="dWa" class="grid" style="margin-bottom:13px"></div>
+    <h2 style="margin-top:4px">sms</h2>
+    <div id="dSms" class="grid"></div>
+  </div>
+  <div class="linha"><button class="btn" id="bSalvarCfg">salvar configuração</button>
+    <div class="msg" id="mCfg"></div></div>
+</section>
+</main>
+
+<div id="qrCaixa"><div class="m">
+  <div id="qrNome" style="color:var(--am);margin-bottom:9px"></div>
+  <img id="qrImg" alt="QR">
+  <div style="color:var(--tx2);margin-top:10px;font-size:11.5px">
+    WhatsApp → Aparelhos conectados → Conectar um aparelho<br>
+    <span style="color:var(--am)">expira em ~20s</span> — feche e abra de novo se passar
+  </div>
+  <div class="linha" style="justify-content:center;margin-top:11px">
+    <button class="btn" id="bQrNovo">gerar outro</button>
+    <button class="btn g" id="bQrFechar">fechar</button>
+  </div>
+</div></div>
+<datalist id="lCidades"></datalist>
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const api=async(r,d)=>{const o=d?{method:"POST",headers:{"Content-Type":"application/json"},
+  body:JSON.stringify(d)}:{};const x=await fetch(r,o);if(x.status===401){location.replace("/");return{erro:"sessão expirada"}}return x.json()};
+// escapa tambem as aspas: nome de campanha e cidade da Receita vao dentro de
+// atributos (data-nome, value) e um " solto quebraria a tag
+const esc=s=>String(s??"").replace(/[<>&"']/g,c=>(
+  {"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;","'":"&#39;"}[c]));
+const msg=(el,t,err)=>{const e=$(el);e.textContent=t;e.className="msg on"+(err?" err":"");
+  clearTimeout(e._t);e._t=setTimeout(()=>e.className="msg",6000)};
+let CFG={},PROV={},selCamp=null,selCampCanal="sms";
+
+/* tema */
+$("#tema").onclick=()=>{const l=document.documentElement.dataset.t==="light";
+  document.documentElement.dataset.t=l?"":"light";localStorage.dtema=l?"":"light"};
+if(localStorage.dtema)document.documentElement.dataset.t=localStorage.dtema;
+
+/* abas */
+$$("nav button").forEach(b=>b.onclick=()=>{
+  $$("nav button").forEach(x=>x.classList.toggle("on",x===b));
+  $$(".aba").forEach(s=>s.classList.toggle("on",s.id==="ab-"+b.dataset.aba));
+  if(b.dataset.aba==="bloqueios")carregarBloqueios();
+  if(b.dataset.aba==="avisos")carregarAvisos();
+  if(b.dataset.aba==="fila"){carregarFila();carregarPresos();}
+  if(b.dataset.aba==="chips")carregarChips(true);
+  if(b.dataset.aba==="conversas")carregarZap();
+});
+
+/* variaveis clicaveis */
+const VARS=["{nome}","{primeiro_nome}","{cidade}","{bairro}","{segmento}","{segmento_curto}",
+            "{saudacao}","{email}","{cnpj}","{a|b|c}"];
+$("#vars").innerHTML=VARS.map(v=>`<code>${esc(v)}</code>`).join("")+
+  ` <span style="color:var(--tx3)">clique para inserir · {a|b} sorteia uma variação</span>`;
+$("#vars").onclick=e=>{if(e.target.tagName!=="CODE")return;
+  const t=$("#nModelo"),p=t.selectionStart;
+  t.value=t.value.slice(0,p)+e.target.textContent+t.value.slice(t.selectionEnd);
+  t.focus();t.selectionStart=t.selectionEnd=p+e.target.textContent.length};
+
+/* ---------- estado global ---------- */
+// versao do painel vista ao carregar. Mudou = sistema atualizado: recarrega,
+// a menos que haja texto digitado e nao enviado (ai so avisa no topo)
+let VERSAO=null;
+const textoPendente=()=>[$("#zTexto"),$("#nNome"),$("#nModelo"),$("#nTmplParams")]
+  .some(e=>e&&e.value.trim())||!!($("#nImgArq")&&$("#nImgArq").value);
+$("#pAtualizar").onclick=()=>location.reload();
+function conferirVersao(v){
+  if(!v)return;
+  if(!VERSAO){VERSAO=v;return}
+  if(v===VERSAO)return;
+  if(textoPendente())$("#pAtualizar").style.display="";
+  else location.reload();
+}
+async function tick(){
+  const s=await api("/api/estado");
+  conferirVersao(s.versao);
+  $("#pContatos").textContent=s.contatos.toLocaleString("pt-BR");
+  $("#pDisp").textContent=(s.disparadas||0).toLocaleString("pt-BR");
+  $("#pHoje").textContent=s.hoje.toLocaleString("pt-BR");
+  $("#pBloq").textContent=s.bloqueios.toLocaleString("pt-BR");
+  const m=s.motor.situacao||"parado",lig=m!=="parado";
+  $("#pMotor").className="pill "+(lig?(m==="enviando"?"on":"warn"):"off");
+  $("#pMotor").textContent="motor: "+m+(s.motor.enviados_sessao?` · ${s.motor.enviados_sessao} enviados`:"");
+  $("#bMotor").textContent=lig?"parar motor":"ligar motor";
+  $("#pJanela").className="pill "+(s.janela.aberta?"on":"warn");
+  $("#pJanela").textContent=s.janela.aberta?"janela: aberta"
+    :`janela: ${s.janela.motivo} · reabre ${s.janela.reabre.replace("T"," ")}`;
+  PROV=s.provedores;
+  // pendências que travam disparo têm de doer na cara, não só no log
+  const alertas=[];
+  if(s.indeterminados)alertas.push(`${s.indeterminados} em limbo`);
+  if(s.webhooks_descartados)alertas.push(`${s.webhooks_descartados} webhook(s) descartado(s)`);
+  $("#pAlerta").style.display=alertas.length?"":"none";
+  $("#pAlerta").className="pill off";
+  $("#pAlerta").textContent=alertas.join(" · ");
+  if(s.chips){const c=s.chips;
+    $("#pChips").className="pill "+(c.conectados?"on":"warn");
+    $("#pChips").textContent=`chips ${c.conectados}/${c.total}`+
+      (c.capacidade_hoje?` · ${c.capacidade_hoje.toLocaleString("pt-BR")}/dia`:"");}
+  $("#navConversas").textContent=s.nao_lidas?`(${s.nao_lidas})`:"";
+  if($("#ab-nova").classList.contains("on"))mostrarStatusProvedor();
+  $("#dBase").innerHTML=[["contatos",s.contatos],["celulares",s.moveis],["com opt-in",s.consentidos||0],
+    ["bloqueados",s.bloqueios],["enviados hoje",s.hoje]]
+    .map(([k,v])=>`<div class="est"><span>${k}</span><b class="num">${v.toLocaleString("pt-BR")}</b></div>`).join("")+
+    Object.entries(s.envios||{}).map(([k,v])=>
+    `<div class="est"><span>${k}</span><b class="num">${v.toLocaleString("pt-BR")}</b></div>`).join("");
+  // sem nenhum opt-in, a fila de WhatsApp fica sempre em 0: oferece declarar
+  const box=$("#cOptinBase"); if(box)box.style.display=(s.consentidos>0)?"none":"";
+}
+$("#bMotor").onclick=async()=>{
+  const parar=$("#bMotor").textContent.startsWith("parar");
+  await api("/api/motor",{acao:parar?"parar":"ligar"});tick()};
+
+/* ---------- campanhas ---------- */
+async function carregarCampanhas(){
+  const cs=await api("/api/campanhas");
+  if(!Array.isArray(cs))return msg("#mDet",cs.erro||"falha ao ler campanhas",1);
+  $("#tCamp").innerHTML=cs.map(c=>{
+    const r=c.resumo||{},bt=c.estado==="rodando"
+      ?`<button class="btn g" data-p="${c.id}">pausar</button>`
+      :`<button class="btn" data-r="${c.id}">rodar</button>`;
+    const ens=(PROV[c.provedor]||{}).simula;
+    return `<tr data-id="${c.id}" data-nome="${esc(c.nome)}" data-canal="${c.canal}">
+      <td>${c.id}</td><td class="tel">${esc(c.nome)}</td><td>${c.canal}</td>
+      <td>${esc(c.provedor)} ${ens?'<span class="tag ensaio">ensaio</span>':""}</td>
+      <td>${r.fila||0}</td>
+      <td style="color:var(--vd)">${(r.enviado||0)+(r.entregue||0)+(r.lido||0)+(r.respondido||0)}</td>
+      <td style="color:var(--bad)">${(r.falha||0)+(r.bloqueado||0)}</td>
+      <td>${c.cota_restante}</td><td>${c.por_minuto}/min</td>
+      <td><span class="e e-${c.estado==="rodando"?"enviado":"fila"}">${c.estado}</span></td>
+      <td style="text-align:right">${bt} <button class="btn g" data-s="${c.id}">público</button></td></tr>`;
+  }).join("")||`<tr><td colspan="11" style="color:var(--tx3)">nenhuma campanha ainda</td></tr>`;
+}
+$("#tCamp").onclick=async e=>{
+  const b=e.target.closest("button");if(!b)return;
+  const tr=b.closest("tr");
+  if(b.dataset.r||b.dataset.p){
+    const id=+(b.dataset.r||b.dataset.p);
+    if(b.dataset.p){ await api("/api/campanha/estado",{id,estado:"pausada"});
+      carregarCampanhas();tick();return; }
+    let r=await api("/api/campanha/estado",{id,estado:"rodando"});
+    if(r.confirmar){
+      // disparo real: confirmar antes, com o número na frente
+      const txt=`DISPARO REAL via ${r.provedor} (${r.canal}).\n\n`+
+        `${(r.na_fila||0).toLocaleString("pt-BR")} mensagens na fila.\n`+
+        `Isso envia de verdade e não tem como desfazer.\n\nConfirmar?`;
+      if(!confirm(txt)){carregarCampanhas();return}
+      r=await api("/api/campanha/estado",{id,estado:"rodando",confirmar:true});
+    }
+    if(r.fila_vazia){
+      alert(`A fila desta campanha está vazia.\n\n`+
+        `Antes de rodar, clique em "público" na campanha e depois em `+
+        `"montar fila" para escolher os contatos.`);
+      carregarCampanhas();return;
+    }
+    if(r.erro){
+      alert(diagTexto(r)+(r.faltando&&r.faltando.length
+        ? `\n\nCampos a preencher: ${r.faltando.join(", ")}\nVá em "configurar".`:""));
+      if(r.faltando){document.querySelector('nav button[data-aba="config"]').click();carregarConfig();}
+    }
+    carregarCampanhas();tick();return;
+  }
+  if(b.dataset.s){selCamp=+b.dataset.s;selCampCanal=tr.dataset.canal;
+    $("#detNome").textContent="· "+tr.dataset.nome;
+    $("#cDet").style.display="";$("#cDet").scrollIntoView({behavior:"smooth"})}
+};
+const filtros=()=>{const f={};
+  if($("#fCidade").value.trim())f.cidade=$("#fCidade").value.trim();
+  if($("#fSeg").value.trim())f.segmento=$("#fSeg").value.trim();
+  if($("#fBusca").value.trim())f.busca=$("#fBusca").value.trim();
+  if($("#fEmail").checked)f.com_email=1;return f};
+$("#bContar").onclick=async()=>{
+  const r=await api("/api/publico?campanha="+selCamp+"&filtros="+encodeURIComponent(JSON.stringify(filtros())));
+  $("#cContagem").textContent=`${r.total.toLocaleString("pt-BR")} contatos disponíveis (já descontando bloqueio, fila e cooldown)`};
+$("#bMontar").onclick=async()=>{
+  if(!selCamp)return;
+  const lim=+$("#fLim").value||null;
+  // sem limite a fila engole a base filtrada inteira, e não há desfazer
+  const prev=await api("/api/publico?campanha="+selCamp+"&filtros="+encodeURIComponent(JSON.stringify(filtros())));
+  const vao=lim?Math.min(lim,prev.total):prev.total;
+  if(vao>5000&&!confirm(`Isso vai enfileirar ${vao.toLocaleString("pt-BR")} contatos.\n`+
+      `No ritmo atual leva dias para escoar e não há como desfazer pelo painel.\n\nContinuar?`))return;
+  const r=await api("/api/campanha/publico",{id:selCamp,filtros:filtros(),
+    limite:lim,aleatorio:!!$("#fOrd").value,faixas:$("#fFaixas").checked});
+  if(r.erro)return msg("#mDet",diagTexto(r),1);
+  msg("#mDet",`${r.enfileirados} contatos entraram na fila.`);
+  mostrarFaixas(r.faixas);carregarCampanhas()};
+
+// quem ficou com o quê: o operador precisa poder conferir na planilha
+function mostrarFaixas(faixas){
+  if(!faixas||!faixas.length)return $("#dFaixas").innerHTML="";
+  $("#dFaixas").innerHTML=`<table><thead><tr><th>chip</th><th>contatos</th>
+    <th>faixa (id do contato)</th><th>ainda na fila</th></tr></thead><tbody>`+
+    faixas.map(f=>`<tr><td class="tel">${esc(f.chip)}</td>
+      <td>${f.contatos.toLocaleString("pt-BR")}</td>
+      <td style="color:var(--tx3)">${f.primeiro} – ${f.ultimo}</td>
+      <td>${f.restam.toLocaleString("pt-BR")}</td></tr>`).join("")+`</tbody></table>
+    <div class="linha" style="margin-top:8px">
+      <button class="btn g" id="bRedistribuir">redistribuir faixas paradas</button></div>`;
+  const b=$("#bRedistribuir");
+  if(b)b.onclick=async()=>{
+    const r=await api("/api/campanha/redistribuir",{id:selCamp});
+    msg("#mDet",`${r.movidas} mensagens passaram para os chips ativos.`);
+    mostrarFaixas(r.faixas)};
+}
+$("#bPrevia").onclick=async()=>{
+  if(!selCamp)return;
+  mostrarPrevia("#dPrevia",await api("/api/campanha/previa",{id:selCamp,quantos:3}),
+    selCampCanal)};
+
+function mostrarPrevia(alvo,ps,canal){
+  if(ps.erro){msg("#mNova",ps.erro,1);return}
+  const sms=canal==="sms",custo=ps.reduce((a,p)=>a+p.segmentos,0)/ps.length;
+  $(alvo).innerHTML=ps.map(p=>{
+    const sel=sms?` · ${p.caracteres} car · ${p.alfabeto} · <b style="color:${
+      p.segmentos>1?"var(--am)":"var(--vd)"}">${p.segmentos} segmento(s)</b>`
+      :` · ${p.caracteres} caracteres`;
+    return `<div class="previa"><div class="cab">${p.telefone} · ${esc(p.nome||"")}${sel}</div>${esc(p.texto)}</div>`;
+  }).join("")+(sms
+    ?`<div style="color:var(--tx3)">média ${custo.toFixed(1)} segmento(s)/mensagem — cada
+       segmento é cobrado à parte, e acentos derrubam o limite de 160 para 70 caracteres.</div>`
+    :"");
+}
+
+/* ---------- nova campanha ---------- */
+function provedoresDoCanal(){
+  const canal=$("#nCanal").value;
+  $("#nProv").innerHTML=Object.entries(PROV).filter(([,p])=>p.canais.includes(canal))
+    .map(([n,p])=>`<option value="${n}">${esc(p.rotulo)}${
+      p.simula?" — não envia nada":(p.pronto?" ✓":" — "+esc(p.mensagem||"falta configurar"))
+    }</option>`).join("");
+  $("#nTmpl").style.display=(canal==="whatsapp")?"":"none";
+  $("#nImg").style.display=(canal==="whatsapp")?"":"none";
+  if(canal!=="whatsapp")limparImagem();
+  ajustarAquecimento();mostrarStatusProvedor();
+}
+// abaixo do seletor, o que falta para ESTE provedor, com o caminho da correção
+function mostrarStatusProvedor(){
+  const n=$("#nProv").value,p=PROV[n]||{};
+  const el=$("#nStatus");if(!el)return;
+  const classe=p.simula?"ensaio":(p.pronto?"ok":"falta");
+  el.className="prov "+classe;el.style.marginTop="9px";
+  el.innerHTML=`<div class="top"><span class="tag ${classe}">${
+      p.simula?"ensaio":(p.pronto?"pronto":"falta configurar")}</span>
+      <span class="diag" style="margin:0">${esc(p.mensagem||"")}</span></div>`+
+    (p.pronto&&!p.simula?"":`<div class="acao" style="margin:6px 0 0">${esc(p.acao||"")}
+      ${p.pronto?"":'· <a href="#" id="irConfig" style="color:var(--vd)">abrir configuração</a>'}</div>`);
+  const ir=$("#irConfig");
+  if(ir)ir.onclick=e=>{e.preventDefault();
+    document.querySelector('nav button[data-aba="config"]').click();carregarConfig()};
+}
+// A rampa limita volume; nunca cria conversa ou substitui opt-in.
+function ajustarAquecimento(){
+  const p=PROV[$("#nProv").value]||{};
+  $("#nAquec").checked=!!p.aquece;
+  $("#nAquecPor").textContent=p.aquece
+    ?"— obrigatório: limite progressivo, sem tráfego artificial"
+    :($("#nProv").value==="whatsapp_cloud"
+      ?"— desligado: a Meta só sobe seu limite se você usar metade dele num dia"
+      :"— desnecessário neste provedor");
+}
+$("#nCanal").onchange=provedoresDoCanal;
+$("#nProv").onchange=()=>{ajustarAquecimento();mostrarStatusProvedor()};
+let imagemAtual=null;   // id da imagem enviada, ou null
+const metaNova=()=>{const m={aquecimento:$("#nAquec").checked||undefined};
+  if(imagemAtual)m.imagem=imagemAtual;
+  if($("#nCanal").value==="whatsapp"&&$("#nTmplNome").value.trim()){
+    m.template=$("#nTmplNome").value.trim();m.idioma=$("#nTmplIdioma").value.trim()||"pt_BR";
+    const p=$("#nTmplParams").value.trim();if(p)m.params=p.split(",").map(s=>s.trim())}
+  return m};
+
+function limparImagem(){
+  imagemAtual=null;$("#nImgArq").value="";$("#nImgPrev").innerHTML="";
+  $("#nImgLimpar").style.display="none";}
+$("#nImgLimpar").onclick=limparImagem;
+$("#nImgArq").onchange=async()=>{
+  const f=$("#nImgArq").files[0];if(!f)return;
+  if(f.size>5*1024*1024)return msg("#mNova","imagem maior que 5 MB",1);
+  const dataUri=await new Promise((ok,err)=>{const r=new FileReader();
+    r.onload=()=>ok(r.result);r.onerror=err;r.readAsDataURL(f)});
+  $("#nImgPrev").innerHTML='<span style="color:var(--tx3)">enviando…</span>';
+  const r=await api("/api/midia",{dados:dataUri});
+  if(r.erro){$("#nImgPrev").innerHTML="";return msg("#mNova",r.erro,1)}
+  imagemAtual=r.id;
+  $("#nImgPrev").innerHTML=`<img src="${r.url}" alt="prévia" style="max-height:150px;
+    border:1px solid var(--linha);border-radius:6px">`;
+  $("#nImgLimpar").style.display="";};
+$("#bPreviaNova").onclick=async()=>mostrarPrevia("#dPreviaNova",
+  await api("/api/campanha/previa",{modelo:$("#nModelo").value,canal:$("#nCanal").value,quantos:3}),
+  $("#nCanal").value);
+$("#bCriar").onclick=async()=>{
+  if(!$("#nNome").value.trim())return msg("#mNova","dê um nome à campanha",1);
+  const r=await api("/api/campanha",{nome:$("#nNome").value.trim(),canal:$("#nCanal").value,
+    provedor:$("#nProv").value,modelo:$("#nModelo").value,meta:metaNova(),
+    por_minuto:+$("#nRitmo").value,limite_dia:+$("#nLimite").value});
+  if(r.erro)return msg("#mNova",r.erro,1);
+  msg("#mNova",`campanha #${r.id} criada — vá em "campanhas" para montar o público.`);limparImagem();
+  carregarCampanhas()};
+$("#bTeste").onclick=async()=>{
+  const p={telefone:$("#tFone").value,provedor:$("#nProv").value,
+    canal:$("#nCanal").value,modelo:$("#nModelo").value,meta:metaNova()};
+  const r=await api("/api/teste",p);
+  if(r.erro)return msg("#mTeste",diagTexto(r),1);
+  // "enviado" com provedor de ensaio já fez gente achar que a mensagem saiu.
+  // Aqui a simulação é dita antes de qualquer outra coisa.
+  msg("#mTeste", r.simulado
+    ? `SIMULAÇÃO — nada foi enviado. Este é o texto que sairia:\n${r.texto}`
+    : `✓ enviado de verdade via ${r.provedor}${r.com_imagem?" (com a foto)":""} — confira o WhatsApp do número:\n${r.texto}`);
+  $("#mTeste").style.whiteSpace="pre-wrap";
+  $("#mTeste").style.borderLeftColor=r.simulado?"var(--tx3)":"var(--vd)"};
+
+// erro de configuração vira frase acionável, nunca "erro de API"
+function diagTexto(r){
+  return [r.erro, r.acao?("→ "+r.acao):"", r.detalhe?("("+r.detalhe+")"):""]
+    .filter(Boolean).join("  ");
+}
+
+/* ---------- fila ---------- */
+async function carregarFila(){
+  const q=$("#qEstado").value?("?estado="+$("#qEstado").value):"";
+  const es=await api("/api/envios"+q);
+  if(!Array.isArray(es))return;
+  $("#tFila").innerHTML=es.map(e=>`<tr>
+    <td style="color:var(--tx3)">${(e.atualizado_em||"").slice(5,19).replace("T"," ")}</td>
+    <td class="tel">${e.telefone}</td>
+    <td><span class="e e-${e.estado}">${e.estado}</span></td><td>${e.tentativas}</td>
+    <td style="color:${e.erro?"var(--bad)":"var(--tx2)"}">${esc(e.erro||(e.texto||"").slice(0,90))}</td></tr>`).join("")
+    ||`<tr><td colspan="5" style="color:var(--tx3)">nada por aqui</td></tr>`;
+  const lg=await api("/api/eventos?limite=40");
+  $("#tLog").innerHTML=lg.map(l=>`<tr><td style="color:var(--tx3);width:120px">${(l.ts||"").slice(5,19).replace("T"," ")}</td>
+    <td style="width:130px;color:var(--am)">${esc(l.tipo)}</td>
+    <td style="color:var(--tx2)">${esc((l.detalhe||"").slice(0,150))}</td></tr>`).join("");
+}
+$("#bAtualizar").onclick=carregarFila;$("#qEstado").onchange=carregarFila;
+
+// envios em limbo: enquanto existirem, a campanha fica pausada
+async function carregarPresos(){
+  const ps=await api("/api/indeterminados");
+  if(!Array.isArray(ps))return;
+  $("#cPresos").style.display=ps.length?"":"none";
+  $("#tPresos").innerHTML=ps.map(p=>`<tr><td>${p.id}</td>
+    <td class="tel">${p.telefone}</td><td>${esc(p.campanha)}</td>
+    <td style="color:var(--tx3)">${esc(p.conta_externa||"—")}</td>
+    <td style="color:var(--tx3)">${(p.tentativa_em||"").slice(5,19).replace("T"," ")}</td></tr>`).join("");
+}
+$("#cPresos").addEventListener("click",async e=>{
+  const b=e.target.closest("button[data-dec]");if(!b)return;
+  const rotulo={saiu:"marcar como ENVIADO",nao_saiu:"voltar para a FILA",descartar:"DESCARTAR"}[b.dataset.dec];
+  const ps=await api("/api/indeterminados");
+  if(!confirm(`${rotulo} ${ps.length} envio(s) em limbo?\n\n`+
+     `Só confirme depois de conferir o recibo no provedor.`))return;
+  const r=await api("/api/envio/indeterminado",{decisao:b.dataset.dec});
+  if(r.erro)return msg("#mPresos",diagTexto(r),1);
+  msg("#mPresos",`${r.resolvidos} envio(s) resolvido(s).`);
+  carregarPresos();carregarFila();tick()});
+
+/* ---------- bloqueios ---------- */
+async function carregarBloqueios(){
+  const bs=await api("/api/bloqueios");
+  if(!Array.isArray(bs))return;
+  $("#bTotal").textContent=bs.length;
+  $("#tBloq").innerHTML=bs.map(b=>`<tr><td class="tel">${b.telefone}</td><td>${esc(b.motivo)}</td>
+    <td style="color:var(--tx3)">${esc(b.origem||"")}</td>
+    <td style="color:var(--tx3)">${(b.criado_em||"").slice(0,16).replace("T"," ")}</td></tr>`).join("");
+}
+/* ---------- avisos ---------- */
+const AVISO_COR={chip:"var(--am)",ban:"var(--bad)",bloqueio:"var(--bad)",
+  faixa:"var(--am)",seguranca:"var(--bad)",erro:"var(--bad)",campanha:"var(--tx2)"};
+async function carregarAvisos(){
+  const av=await api("/api/avisos?limite=100");
+  if(!Array.isArray(av))return;
+  $("#avTotal").textContent=av.length;
+  $("#navAvisos").textContent=av.length?av.length:"";
+  $("#tAvisos").innerHTML=av.map(a=>`<tr>
+    <td style="color:var(--tx3)">${(a.quando||"").slice(5,19).replace("T"," ")}</td>
+    <td style="color:${AVISO_COR[a.categoria]||"var(--am)"}">${esc(a.titulo)}</td>
+    <td class="tel">${a.telefone?esc(a.telefone):"—"}</td>
+    <td style="color:var(--tx2)">${esc((a.detalhe||"").slice(0,160))}</td></tr>`).join("")
+    ||`<tr><td colspan="4" style="color:var(--tx3)">nenhum aviso — tudo tranquilo</td></tr>`;
+}
+$("#avAtualizar").onclick=carregarAvisos;
+
+$("#bBloquear").onclick=async()=>{
+  const ns=$("#bLista").value.split(/[\n,;]+/).map(s=>s.trim()).filter(Boolean);
+  if(!ns.length)return;
+  const r=await api("/api/bloqueio",{telefones:ns,motivo:"manual"});
+  msg("#mBloq",`${r.bloqueados} número(s) bloqueado(s).`);$("#bLista").value="";
+  carregarBloqueios();tick()};
+
+/* ---------- base: importar por upload de arquivo ---------- */
+function iMostraArquivo(){
+  const f=$("#iArqUp").files[0];
+  $("#bImportar").disabled=!f;
+  $("#iSolta").classList.toggle("cheia",!!f);
+  $("#iSoltaTexto").innerHTML=f
+    ? `✓ <b>${f.name}</b> (${(f.size/1048576).toFixed(1)} MB) — clique em importar`
+    : `<b>Arraste aqui</b> o arquivo que você baixou do Dr. Hery,<br>ou <b>clique para procurar</b>.`;
+}
+$("#iSolta").onclick=()=>$("#iArqUp").click();
+$("#iArqUp").onchange=iMostraArquivo;
+["dragover","dragenter"].forEach(ev=>$("#iSolta").addEventListener(ev,e=>{
+  e.preventDefault();$("#iSolta").classList.add("sobre");}));
+["dragleave","drop"].forEach(ev=>$("#iSolta").addEventListener(ev,e=>{
+  e.preventDefault();$("#iSolta").classList.remove("sobre");}));
+$("#iSolta").addEventListener("drop",e=>{
+  if(e.dataTransfer.files[0]){$("#iArqUp").files=e.dataTransfer.files;iMostraArquivo();}});
+$("#iOptin").onchange=()=>{$("#iOptinBox").style.display=$("#iOptin").checked?"":"none";};
+$("#bImportar").onclick=async()=>{
+  const f=$("#iArqUp").files[0];
+  if(!f)return msg("#mImp","escolha um arquivo CSV primeiro",1);
+  if(f.size>64*1024*1024)return msg("#mImp","arquivo maior que 64 MB — exporte um recorte menor",1);
+  if($("#iOptin").checked && !$("#iOptinOrigem").value.trim())
+    return msg("#mImp","informe de onde veio o opt-in",1);
+  // parâmetros vão na query; o corpo carrega só os bytes do CSV
+  const qs=new URLSearchParams();
+  if($("#iOptin").checked){qs.set("optin","1");qs.set("optin_origem",$("#iOptinOrigem").value.trim());}
+  $("#bImportar").disabled=true;
+  msg("#mImp","enviando e importando… arquivos grandes levam alguns segundos.");
+  try{
+    const resp=await fetch("/api/importar/arquivo?"+qs.toString(),
+      {method:"POST",headers:{"Content-Type":"text/csv"},body:f});
+    const r=await resp.json();
+    if(r.erro)msg("#mImp",r.erro,1);
+    else msg("#mImp",`importados: novos ${r.novos||0} · atualizados ${r.atualizados||0} · com opt-in ${r.com_optin||0} · `+
+      `duplicados ${r.duplicados||0} · fixos ${r.fixo||0} · descartados ${r.descartado||0}`);
+  }catch(e){msg("#mImp","falha no envio: "+e.message,1);}
+  $("#bImportar").disabled=false;
+  tick();carregarCidades()};
+
+$("#obDeclarar").onclick=async()=>{
+  const origem=$("#obOrigem").value.trim();
+  if(!origem)return msg("#mOptin","informe de onde veio o opt-in",1);
+  const est=await api("/api/estado");
+  if(!confirm(`Declarar opt-in de ${(est.moveis-(est.consentidos||0)).toLocaleString("pt-BR")} `+
+     `contatos, com origem:\n"${origem}"\n\n`+
+     `Isso é a sua declaração e a sua responsabilidade legal. Continuar?`))return;
+  msg("#mOptin","declarando…");
+  const r=await api("/api/consentimento/declarar",{origem});
+  if(r.erro)return msg("#mOptin",r.erro,1);
+  msg("#mOptin",`${r.marcados.toLocaleString("pt-BR")} contatos agora com opt-in. `+
+    `Já pode montar a fila em campanhas.`);
+  tick()};
+
+async function carregarCidades(){
+  const cs=await api("/api/cidades");
+  $("#lCidades").innerHTML=cs.map(c=>`<option value="${esc(c.cidade)}">${c.n}</option>`).join("")}
+
+/* ---------- chips ---------- */
+let CHIPS={};
+async function carregarChips(sincronizar){
+  const d=await api("/api/instancias"+(sincronizar?"?sincronizar=1":""));
+  if(!d||!d.chips)return;
+  CHIPS=d;
+  const cap=Number(d.capacidade_hoje)||0,optins=Number(d.contatos_com_optin)||0;
+  const aq=d.aquecimento||{};
+  const maxChips=Number(d.max_chips)||d.chips.length, vagas=maxChips-d.chips.length;
+  $("#dCap").innerHTML=[
+    ["chips cadastrados",`${d.chips.length} / ${maxChips}`],
+    ["chips conectados",`${d.chips.filter(c=>c.conectada).length} / ${d.chips.length}`],
+    ["rampa automática",`${aq.habilitados||0} / ${d.chips.length}`],
+    ["aguardando conexão",(aq.aguardando_conexao||0).toLocaleString("pt-BR")],
+    ["capacidade hoje",cap.toLocaleString("pt-BR")],
+    ["enviados hoje",d.chips.reduce((a,c)=>a+c.enviados_hoje,0).toLocaleString("pt-BR")],
+    ["contatos com opt-in",optins.toLocaleString("pt-BR")],
+    ["dias p/ opt-ins",cap&&optins?Math.ceil(optins/cap).toLocaleString("pt-BR"):"—"],
+  ].map(([k,v])=>`<div class="est"><span>${k}</span><b class="num">${v}</b></div>`).join("");
+  const partes=[`${aq.em_andamento||0} em andamento`,`${aq.estabilizados||0} estabilizados`];
+  if(aq.aguardando_conexao)partes.push(`${aq.aguardando_conexao} aguardando QR/conexão`);
+  if(aq.desativados)partes.push(`${aq.desativados} desativados`);
+  $("#dRampaStatus").innerHTML=`<b>Automática:</b> ${partes.join(" · ")}. `+
+    `A próxima etapa é calculada por chip, sem tarefa manual diária.`;
+  $("#dVagas").textContent=vagas>0
+    ?`${vagas} vaga(s) livre(s) de ${maxChips} chips.`
+    :`Teto de ${maxChips} chips atingido — desconecte um chip para abrir vaga.`;
+  $("#bAddChip").disabled=vagas<=0;
+  // por que o chip esta fora: o operador precisa saber se vale ler QR de novo
+  const QUEDA={"401":"WhatsApp encerrou a sessão (banimento ou desvinculado no celular) — só volta com QR novo",
+    "403":"número bloqueado pelo WhatsApp","408":"tempo esgotado","428":"conexão fechada",
+    "440":"sessão aberta em outro lugar","500":"sessão corrompida — leia o QR de novo",
+    "503":"WhatsApp indisponível","515":"reinício pedido pelo WhatsApp",
+    "sem_sessao":"o gateway não tem mais a sessão — leia o QR"};
+  $("#dChips").innerHTML=d.chips.map(c=>{
+    const classe=!c.ativa?"desl":(c.conectada?"on":"off");
+    const queda=c.conectada?"":(QUEDA[c.motivo_queda]||(c.motivo_queda?`motivo ${c.motivo_queda}`:""));
+    const pct=c.cota_hoje?Math.max(0,Math.min(100,100*Number(c.enviados_hoje)/Number(c.cota_hoje))):0;
+    const estadoRampa={desativada:"rampa desligada",aguardando_conexao:"rampa aguardando conexão",
+      em_andamento:`dia ${c.dia_rampa} da rampa`,estabilizada:"rampa estabilizada"}[c.rampa_estado]||"";
+    return `<div class="chip ${classe}" data-id="${c.id}" data-nome="${esc(c.nome)}">
+      <div class="cab"><b>${esc(c.rotulo||c.nome)}</b>
+        <span class="tag ${c.conectada?"ok":"falta"}">${esc(c.conectada?"conectado":(c.estado||"—"))}</span>
+        ${c.numero?`<span class="num">${esc(c.numero)}</span>`:""}
+        ${estadoRampa?`<span class="tag det">${esc(estadoRampa)}</span>`:""}
+        ${c.reconectando?`<span class="tag det" title="o vigia pede ao gateway para reerguer a sessão a cada 2 min">reconectando sozinho</span>`:""}</div>
+      ${queda?`<div style="color:${c.banido?"var(--bad)":"var(--tx3)"};font-size:11px;margin-bottom:5px">${esc(queda)}</div>`:""}
+      <div class="barra"><i style="width:${pct}%"></i></div>
+      <div class="med"><span>hoje <b>${c.enviados_hoje}</b> de <b>${c.cota_hoje}</b></span>
+        <span>restam <b>${c.cota_restante}</b></span>
+        ${c.aquecer&&c.proxima_cota!==c.cota_hoje?`<span>próxima etapa <b>${c.proxima_cota}/dia</b></span>`:""}
+        <span>ritmo <b>${c.por_minuto}/min</b></span></div>
+      <div class="acoes">
+        ${c.conectada?"":`<button class="btn" data-qr="${esc(c.nome)}">ler QR</button>`}
+        <label><input type="checkbox" data-f="ativa" ${c.ativa?"checked":""}> ativo</label>
+        <label><input type="checkbox" data-f="aquecer" ${c.aquecer?"checked":""}> rampa</label>
+        <label>ritmo <input type="number" step="0.5" data-f="por_minuto" value="${c.por_minuto}"></label>
+        <label>teto/dia <input type="number" data-f="limite_dia" value="${c.limite_dia}"></label>
+        <button class="btn g" data-pausa="${esc(c.nome)}" data-ativa="${c.ativa?0:1}"
+          >${c.ativa?"pausar":"religar"}</button>
+        <button class="btn r" data-del="${esc(c.nome)}"
+          title="encerra a sessão do WhatsApp">desconectar</button>
+      </div></div>`;}).join("")
+    ||`<span style="color:var(--tx3)">nenhum chip — crie o primeiro acima</span>`;
+
+}
+$("#dChips").addEventListener("change",async e=>{
+  const campo=e.target.dataset.f;if(!campo)return;
+  const cartao=e.target.closest(".chip");
+  const valor=e.target.type==="checkbox"?(e.target.checked?1:0):e.target.value;
+  await api("/api/instancia/config",{id:+cartao.dataset.id,[campo]:valor});
+  carregarChips();tick();
+});
+$("#dChips").addEventListener("click",async e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.qr)return abrirQr(b.dataset.qr);
+  if(b.dataset.pausa){
+    // tira do rodízio sem encostar na sessão
+    await api("/api/instancia/pausar",{nome:b.dataset.pausa,ativa:+b.dataset.ativa});
+    carregarChips();tick();return;}
+  if(b.dataset.del){
+    // destrutivo de verdade: exige digitar o nome, porque reconectar custa QR novo
+    const nome=b.dataset.del;
+    const digitado=prompt(`DESCONECTAR o chip "${nome}".\n\n`+
+      `A sessão do WhatsApp é encerrada e só volta lendo um QR novo no celular.\n`+
+      `Para apenas tirar da operação, use PAUSAR — a sessão continua conectada.\n\n`+
+      `Digite ${nome} para confirmar:`);
+    if(digitado===null)return;
+    const r=await api("/api/instancia/remover",{nome,confirmar_nome:digitado});
+    if(r.erro)return msg("#mChip",diagTexto(r),1);
+    msg("#mChip",`chip ${nome} desconectado.`);carregarChips();tick();}
+});
+$("#bAddChip").onclick=async()=>{
+  const r=await api("/api/instancia",{nome:$("#iNome").value.trim(),rotulo:$("#iRotulo").value.trim()});
+  if(r.erro)return msg("#mChip",diagTexto(r),1);
+  msg("#mChip","chip criado — clique em [ler QR] para conectar.");
+  $("#iNome").value="";$("#iRotulo").value="";carregarChips(true);tick()};
+$("#bSincChip").onclick=()=>carregarChips(true);
+$("#bRampa").onclick=async()=>{
+  const b=$("#bRampa");b.disabled=true;msg("#mChip","ativando rampa automática…");
+  try{
+    const r=await api("/api/instancias/rampa",{});
+    if(r.erro)return msg("#mChip",diagTexto(r),1);
+    const partes=[];
+    if(r.habilitados.length)partes.push(`${r.habilitados.length} habilitado(s)`);
+    if(r.iniciados.length)partes.push(`${r.iniciados.length} iniciado(s) agora`);
+    if(r.aguardando_conexao.length)partes.push(`${r.aguardando_conexao.length} aguardando conexão`);
+    if(r.ja_ativos.length)partes.push(`${r.ja_ativos.length} já estavam rodando`);
+    msg("#mChip",partes.join(" · ")||"nenhum chip ativo encontrado.");
+    await carregarChips();tick();
+  }catch(e){msg("#mChip","falha ao ativar rampa: "+e.message,1)}
+  finally{b.disabled=false}};
+
+/* ---------- conversas ---------- */
+// estado da tela: chip e cliente abertos, e a "assinatura" da conversa
+// renderizada -- sem ela o polling de 3s redesenharia tudo e jogaria o
+// scroll e o texto selecionado fora a cada volta
+const ZAP={chip:null,tel:null,assin:"",convs:[],chips:[]};
+const TIPO_MSG={imagem:"📷 foto",video:"🎥 vídeo",audio:"🎤 áudio",documento:"📄 documento",
+  figurinha:"figurinha",localizacao:"📍 localização",contato:"👤 contato",outro:"mensagem"};
+const hhmm=iso=>iso?new Date(iso).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}):"";
+const quando=iso=>{if(!iso)return"";const d=new Date(iso),h=new Date();
+  return d.toDateString()===h.toDateString()?hhmm(iso):d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})};
+const prevMsg=c=>(c.ultima_direcao==="saida"?"você: ":"")+
+  (c.ultimo_texto||(c.ultimo_tipo!=="texto"?TIPO_MSG[c.ultimo_tipo]||"":""));
+
+async function carregarZap(){
+  const d=await api("/api/conversas");if(!d||!d.chips)return;
+  ZAP.chips=d.chips;
+  if(!ZAP.chip&&d.chips.length){
+    // abre no chip com mensagem nova, senao no primeiro conectado
+    const alvo=d.chips.find(c=>c.nao_lidas)||d.chips.find(c=>c.conectada)||d.chips[0];
+    ZAP.chip=alvo.chip}
+  $("#zChips").innerHTML=d.chips.map(c=>`<div class="item ${c.chip===ZAP.chip?"on":""}" data-chip="${esc(c.chip)}">
+      <b><span class="ponto ${c.conectada?"on":""}"></span>${esc(c.rotulo)}</b>
+      ${c.nao_lidas?`<span class="nl">${c.nao_lidas}</span>`:"<span></span>"}
+      <small>${esc(c.numero||"sem número")}</small><small>${esc(quando(c.ultima_em))}</small></div>`).join("")
+    ||`<div class="vazio">nenhum chip cadastrado</div>`;
+  if(ZAP.chip)await carregarConversas();
+}
+
+async function carregarConversas(){
+  const d=await api("/api/conversas?chip="+encodeURIComponent(ZAP.chip));
+  if(!d||!d.conversas)return;
+  ZAP.convs=d.conversas;
+  const chip=ZAP.chips.find(c=>c.chip===ZAP.chip)||{};
+  $("#zTitConv").textContent=`conversas · ${chip.rotulo||ZAP.chip}`;
+  desenharConversas();
+  if(ZAP.tel)await carregarThread();
+}
+
+function desenharConversas(){
+  const q=$("#zBusca").value.trim().toLowerCase();
+  const lista=ZAP.convs.filter(c=>!q||(c.telefone+" "+(c.nome||"")).toLowerCase().includes(q));
+  $("#zConv").innerHTML=lista.map(c=>`<div class="item ${c.telefone===ZAP.tel?"on":""}" data-tel="${esc(c.telefone)}">
+      <b>${esc(c.nome||c.telefone)}</b><small>${esc(quando(c.ultima_em))}</small>
+      <small>${c.bloqueado?`<span style="color:var(--bad)">bloqueado · </span>`:""}${esc(prevMsg(c))}</small>
+      ${c.nao_lidas?`<span class="nl">${c.nao_lidas}</span>`:"<span></span>"}</div>`).join("")
+    ||`<div class="vazio">${ZAP.convs.length?"nada encontrado":"nenhuma conversa neste chip ainda"}</div>`;
+}
+
+async function carregarThread(forcar){
+  const chip=ZAP.chip,tel=ZAP.tel;
+  // ler=1: a conversa esta na tela, entao o que chegou ja foi visto
+  const d=await api(`/api/conversa?chip=${encodeURIComponent(chip)}&telefone=${encodeURIComponent(tel)}&ler=1`);
+  if(!d||!d.mensagens||chip!==ZAP.chip||tel!==ZAP.tel)return;   // trocou no meio
+  const ms=d.mensagens,assin=`${chip}|${tel}|${ms.length}|${ms.length?ms[ms.length-1].id:0}|${d.bloqueado||""}`;
+  const chipInfo=ZAP.chips.find(c=>c.chip===chip)||{};
+  const trava=d.bloqueado?`número na blocklist (${d.bloqueado}) — não é possível responder`
+    :(!chipInfo.conectada?"chip desconectado — conecte na aba chips para responder":"");
+  $("#zTexto").disabled=!!trava;$("#zEnviar").disabled=!!trava;
+  $("#zTexto").placeholder=trava||"responder… (Enter envia)";
+  $("#zTitMsg").textContent=[d.nome||tel,d.nome?tel:"",d.cidade||""].filter(Boolean).join(" · ");
+  if(assin===ZAP.assin&&!forcar)return;
+  const caixa=$("#zMsgs"),noFim=caixa.scrollHeight-caixa.scrollTop-caixa.clientHeight<60;
+  let dia="";
+  caixa.innerHTML=ms.map(m=>{
+    const dd=new Date(m.criado_em).toLocaleDateString("pt-BR");
+    const sep=dd!==dia?(dia=dd,`<div class="dia">${esc(dd)}</div>`):"";
+    const midia=m.tipo!=="texto"?`<div class="midia">${esc(TIPO_MSG[m.tipo]||m.tipo)}</div>`:"";
+    const orig=m.direcao==="saida"?({campanha:" · campanha",manual:" · painel",webhook:" · celular"}[m.origem]||""):"";
+    return `${sep}<div class="bolha ${m.direcao}">${midia}${esc(m.texto||"")}<span class="hora">${esc(hhmm(m.criado_em)+orig)}</span></div>`;
+  }).join("")||`<div class="vazio">sem mensagens</div>`;
+  if(noFim||ZAP.assin.split("|").slice(0,2).join("|")!==`${chip}|${tel}`)caixa.scrollTop=caixa.scrollHeight;
+  ZAP.assin=assin;
+}
+
+$("#zChips").addEventListener("click",e=>{const it=e.target.closest(".item");if(!it)return;
+  if(ZAP.chip===it.dataset.chip)return;
+  ZAP.chip=it.dataset.chip;ZAP.tel=null;ZAP.assin="";
+  $("#zMsgs").innerHTML=`<div class="vazio">escolha uma conversa</div>`;$("#zTitMsg").textContent="conversa";
+  $("#zTexto").disabled=$("#zEnviar").disabled=true;carregarZap()});
+$("#zConv").addEventListener("click",e=>{const it=e.target.closest(".item");if(!it)return;
+  ZAP.tel=it.dataset.tel;ZAP.assin="";desenharConversas();carregarThread(true).then(()=>$("#zTexto").focus())});
+$("#zBusca").addEventListener("input",desenharConversas);
+
+async function enviarZap(){
+  const t=$("#zTexto"),texto=t.value.trim();
+  if(!texto||!ZAP.chip||!ZAP.tel||t.disabled)return;
+  $("#zEnviar").disabled=t.disabled=true;
+  try{
+    const r=await api("/api/responder",{chip:ZAP.chip,telefone:ZAP.tel,texto});
+    if(r.erro)return msg("#mZap",r.erro,1);
+    t.value="";await carregarConversas();
+  }catch(e){msg("#mZap","falha ao enviar: "+e.message,1)}
+  finally{$("#zEnviar").disabled=t.disabled=false;t.focus();carregarThread()}
+}
+$("#zEnviar").onclick=enviarZap;
+$("#zTexto").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();enviarZap()}});
+$("#zTexto").addEventListener("input",e=>{e.target.style.height="auto";
+  e.target.style.height=Math.min(140,e.target.scrollHeight)+"px"});
+
+/* QR em janela: o código gira, então dá para gerar outro sem sair */
+let qrAtual=null;
+async function abrirQr(nome){
+  qrAtual=nome;$("#qrNome").textContent="conectando: "+nome;
+  $("#qrImg").src="";$("#qrCaixa").classList.add("on");
+  const r=await api("/api/instancia/qr",{nome});
+  if(r.erro){$("#qrNome").textContent=r.erro;return}
+  if(r.png)$("#qrImg").src=r.png;
+}
+$("#bQrNovo").onclick=()=>qrAtual&&abrirQr(qrAtual);
+$("#bQrFechar").onclick=()=>{$("#qrCaixa").classList.remove("on");qrAtual=null;carregarChips(true)};
+$("#qrCaixa").onclick=e=>{if(e.target.id==="qrCaixa")$("#bQrFechar").click()};
+
+/* ---------- config ---------- */
+// um cartão por provedor: status, o que falta, o que fazer, e os campos.
+// segredo nunca chega aqui com valor — o servidor manda null + "_preenchidos".
+function cartaoProvedor(nome,cfgProv){
+  const p=PROV[nome]||{}, campos=p.campos||{}, obr=p.obrigatorios||[];
+  const cheios=cfgProv._preenchidos||[], doAmb=cfgProv._do_ambiente||[];
+  const classe=p.simula?"ensaio":(p.pronto?"ok":"falta");
+  const rotuloTag=p.simula?"ensaio":(p.pronto?"pronto":"falta configurar");
+  const faltando=new Set(p.faltando||[]);
+  const inputs=Object.keys(campos).map(k=>{
+    const segredo=/token|key|senha|secret|sid/i.test(k);
+    const preenchido=cheios.includes(k), doEnv=doAmb.includes(k);
+    const v=cfgProv[k];
+    return `<div><label>${esc(campos[k]||k)}
+        ${obr.includes(k)?'<span class="req">*</span>':""}
+        ${doEnv?'<span class="env">— vem do ambiente</span>':""}</label>
+      <input data-p="${esc(nome)}" data-k="${esc(k)}"
+        class="${faltando.has(k)?"vazio":""}"
+        ${segredo?'type="password"':""}
+        ${doEnv?"disabled":""}
+        placeholder="${segredo&&preenchido?"(preenchido — deixe em branco para manter)":""}"
+        value="${segredo?"":esc(typeof v==="object"?JSON.stringify(v):(v??""))}"></div>`;
+  }).join("");
+  return `<div class="prov ${classe}">
+    <div class="top"><span class="nome">${esc(p.rotulo||nome)}</span>
+      <span class="tag ${classe}">${rotuloTag}</span>
+      ${p.detalhe?`<span class="tag det">${esc(p.detalhe)}</span>`:""}</div>
+    <div class="diag">${esc(p.mensagem||"")}</div>
+    ${p.acao?`<div class="acao">${esc(p.acao)}${p.doc?` · <a href="${esc(p.doc)}"
+        target="_blank" rel="noopener" style="color:var(--vd)">documentação</a>`:""}</div>`:""}
+    <div class="campos">${inputs||'<span style="color:var(--tx3)">nada a configurar</span>'}</div>
+  </div>`;
+}
+async function carregarConfig(){
+  CFG=await api("/api/config");const j=CFG.janela;
+  $("#cIni").value=j.inicio;$("#cFim").value=j.fim;$("#cSIni").value=j.sabado_inicio;
+  $("#cSFim").value=j.sabado_fim;$("#cDom").checked=!!j.domingo;
+  $("#cCool").value=CFG.cooldown_dias;
+  $("#cRodSms").value=CFG.optout.rodape_sms;$("#cRodWa").value=CFG.optout.rodape_whatsapp;
+  const porCanal=c=>Object.keys(CFG.provedores)
+    .filter(n=>(PROV[n]?.canais||[]).includes(c))
+    .map(n=>cartaoProvedor(n,CFG.provedores[n])).join("");
+  $("#dWa").innerHTML=porCanal("whatsapp");
+  $("#dSms").innerHTML=porCanal("sms");
+}
+$("#bSalvarCfg").onclick=async()=>{
+  CFG.janela={inicio:$("#cIni").value,fim:$("#cFim").value,sabado_inicio:$("#cSIni").value,
+    sabado_fim:$("#cSFim").value,domingo:$("#cDom").checked};
+  CFG.cooldown_dias=+$("#cCool").value;
+  CFG.optout.rodape_sms=$("#cRodSms").value;CFG.optout.rodape_whatsapp=$("#cRodWa").value;
+  for(const i of $$(".prov input")){
+    if(i.disabled)continue;                       // veio do ambiente: não mexer
+    let v=i.value;
+    const segredo=i.type==="password";
+    if(segredo&&!v)continue;                      // em branco = manter o guardado
+    if(/^[[{]/.test(v.trim())){
+      // salvar json quebrado como texto corrompia o corpo da requisição do
+      // gateway e o erro só aparecia no primeiro disparo
+      try{v=JSON.parse(v)}catch(e){
+        return msg("#mCfg",`${i.dataset.p}.${i.dataset.k}: JSON inválido — ${e.message}`,1)}
+    }
+    CFG.provedores[i.dataset.p][i.dataset.k]=v}
+  const r=await api("/api/config",CFG);
+  if(r&&r.erro)return msg("#mCfg",r.erro,1);
+  CFG=r;msg("#mCfg","configuração salva. Verificando os provedores…");
+  await tick();await carregarConfig()};
+
+/* ---------- boot ---------- */
+
+/* ---------- tutorial de apresentação ---------- */
+const PASSOS=[
+ {e:"👋",t:"Bem-vindo ao disparador",h:`
+   <p>Este painel manda mensagens de WhatsApp em massa pelos seus chips, no seu
+   ritmo e com as travas de segurança ligadas.</p>
+   <p>São <b>6 passos</b> do zero até o primeiro disparo. Vou mostrar cada aba.
+   Pode <b>pular</b> a qualquer momento e voltar aqui pelo botão <kbd>? tutorial</kbd>.</p>`},
+ {e:"🔌",t:"1. Configurar o provedor",h:`
+   <p>Na aba <kbd>config</kbd> ficam as credenciais. Para WhatsApp grátis, o
+   provedor é o <b>Evolution</b> — o gateway que roda na sua máquina.</p>
+   <div class="destaque">Se aparecer <b>pronto</b> em verde, já está configurado.
+   Se aparecer o que falta, o próprio cartão diz o comando para resolver.</div>`},
+ {e:"📱",t:"2. Conectar os chips",h:`
+   <p>Na aba <kbd>chips</kbd> você conecta os números. Clique em
+   <b>ler QR</b> num chip e escaneie com o WhatsApp do celular
+   (Aparelhos conectados → Conectar um aparelho).</p>
+   <div class="destaque">Cada chip começa devagar (rampa de aquecimento) e sobe
+   sozinho ao longo dos dias. Use <b>chip pré-pago</b>, nunca o pessoal.</div>`},
+ {e:"✏️",t:"3. Criar a campanha",h:`
+   <p>Na aba <kbd>nova campanha</kbd>: dê um nome, escreva a mensagem e, se
+   quiser, anexe uma <b>foto</b> (só WhatsApp). O texto vira a legenda.</p>
+   <p>Use variáveis como <kbd>{nome}</kbd> e <kbd>{cidade}</kbd> — cada contato
+   recebe a versão dele.</p>`},
+ {e:"🧪",t:"4. Testar no seu número",h:`
+   <p>Ainda na <kbd>nova campanha</kbd>, no bloco <b>envio de teste</b>, digite
+   o <b>seu</b> número e clique em <b>enviar 1 mensagem de teste</b>.</p>
+   <div class="destaque">Chega no seu WhatsApp exatamente como o contato vai
+   receber — com a foto e a legenda. É o jeito de conferir antes de disparar.</div>
+   <p>Precisa de pelo menos <b>um chip conectado</b> (passo 2).</p>`},
+ {e:"👥",t:"5. Montar o público  ⬅ o passo que costuma faltar",h:`
+   <p>Este é o passo que faz o disparo acontecer. Na aba <kbd>campanhas</kbd>,
+   clique em <b>público</b> na sua campanha, escolha os filtros e clique em
+   <b>montar fila</b>.</p>
+   <div class="aviso">Sem montar o público, a fila fica <b>vazia</b> — e ao
+   clicar em rodar a campanha só aparece como <b>concluída</b> na hora, sem
+   enviar nada. Era isso que estava acontecendo.</div>`},
+ {e:"🚀",t:"6. Rodar",h:`
+   <p>Com a fila montada, clique em <b>rodar</b> na campanha e confirme. O motor
+   começa a enviar no ritmo de cada chip, respeitando janela de horário, cota e
+   quem pediu para sair.</p>
+   <div class="destaque">Acompanhe na aba <kbd>fila</kbd> o que já saiu, o que
+   falhou e as respostas.</div>`},
+ {e:"⚠️",t:"Importante: opt-in do WhatsApp",h:`
+   <p>Campanhas de WhatsApp só disparam para contatos que têm <b>consentimento</b>
+   (opt-in) na lista importada. A base pública da Receita <b>não tem</b> — por
+   isso a fila dela fica em zero.</p>
+   <div class="aviso">Para disparar, importe uma lista com as colunas
+   <kbd>consentimento_em</kbd> e <kbd>consentimento_origem</kbd>. É o que mantém
+   a operação longe de denúncia e banimento.</div>
+   <p>Pronto! Você pode reabrir este guia quando quiser em <kbd>? tutorial</kbd>.</p>`},
+];
+let tutI=0;
+function tutMostra(){
+  const p=PASSOS[tutI];
+  $("#tutPasso").textContent=`${tutI+1} / ${PASSOS.length}`;
+  $("#tutCorpo").innerHTML=`<div class="tut-corpo"><span class="tut-emoji">${p.e}</span>
+    <h3>${p.t}</h3>${p.h}</div>`;
+  $("#tutAnt").style.visibility=tutI?"visible":"hidden";
+  $("#tutProx").textContent=tutI===PASSOS.length-1?"concluir":"próximo →";
+}
+function tutAbrir(){tutI=0;tutMostra();$("#tut").style.display="flex";}
+function tutFechar(){$("#tut").style.display="none";
+  try{localStorage.setItem("tut_visto","1")}catch(e){}}
+$("#bTutorial").onclick=tutAbrir;
+$("#tutPular").onclick=tutFechar;
+$("#tutAnt").onclick=()=>{if(tutI){tutI--;tutMostra()}};
+$("#tutProx").onclick=()=>{if(tutI<PASSOS.length-1){tutI++;tutMostra()}else tutFechar()};
+$("#tut").onclick=e=>{if(e.target.id==="tut")tutFechar()};
+// primeira visita: abre sozinho
+try{if(!localStorage.getItem("tut_visto"))tutAbrir()}catch(e){}
+
+(async()=>{await tick();await carregarConfig();provedoresDoCanal();
+  carregarCampanhas();carregarCidades();carregarFila();
+  setInterval(async()=>{await tick();
+    if($("#ab-campanhas").classList.contains("on"))carregarCampanhas();
+    if($("#ab-fila").classList.contains("on")&&$("#qAuto").checked)carregarFila();
+    if($("#ab-chips").classList.contains("on"))carregarChips();
+    if($("#ab-conversas").classList.contains("on"))carregarZap();},3000);
+})();
+</script></body></html>

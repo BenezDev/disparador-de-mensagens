@@ -1,0 +1,9 @@
+config.json
+dados/
+deploy/.chave
+deploy/.webhook-chave
+.painel-chave
+.webhook-chave
+deploy/.pgsenha
+__pycache__/
+*.pyc
